@@ -21,44 +21,64 @@ import "src/interfaces/IERC20.sol";
 
 // }
 
-contract ERC20 is Test {
-
-    // The System under Test: https://en.wikipedia.org/wiki/System_under_test
-    IERC20 sut;
-
-    address alice = vm.addr(0x1);
-    address bob = vm.addr(0x2);
+contract ERC20Test is Test {
 
     ///@notice create a new instance of HuffDeployer
     HuffDeployer huffDeployer = new HuffDeployer();
 
-    IERC20 erc20;
+    IERC20 huffERC20;
 
+    // address alice = vm.addr(0x1);
+    // // address bob = vm.addr(0x2);
 
-    function setUpAndDeploy() public {
-        // Deploy a new instance of src/ERC20.huff
+    function setUp() public {
+        // Use the huff deployer to deploy the huff contract, returning the address
+        // of the newly deployed contract instance
 
-        erc20 = IERC20(huffDeployer.deployContract("ERC20"));
-        // address addr = HuffDeployer.deploy("huff_contracts/ERC20");
-        // sut = IERC20(addr);
+        // taking a look at the ERC20 constructor, it takes three arguments
+        // constructor(string memory _name, string memory _symbol, uint8 _decimals)
+        // We can pass args into the huff deployer like this
 
-        // IERC20 ierc20 = IERC20(addr);
-        // erc20 = new ERC20("GOKU","GK");
-        // impl = new sut.name("Goku");
+        string memory _name = "JawnToken";
+        string memory _symbol = "JAWN";
+        uint8 _decimals = 18;
+
+        // the arguments are packed into a byte array so that the huff deployer can 
+        // use them during deployment. You check out how this works under the hood by referencing
+        // the huff deployer contract
+
+        bytes memory args = abi.encode(_name, _symbol, _decimals);
+
+        // now we can deploy the contract, which should return the newly deployed contract address
+        // if everything is successful
+
+        IERC20 huffERC20 = IERC20(huffDeployer.deployContract("ERC20", args));
+
+        // Then you can use the initialized new instance of a IERC20
+
     }
 
-    // function testName() external {
-    //     sut.name(alice, "GOKU");
-    //     assertEq(sut.name("GOKU"), address(this));
-    // }
+    // This function should test the name function in the IERC20 interface
+    // and since we used the deployed huff contract's address to initialize the IERC20
+    // we are actually testing the huff contract
+    function testName() external {
+        
+        // Here is the function sig of the name() method
+        // function name() external view returns (string memory);
+        // so we can call huffERC20.name() and assert that the return value is correct
+
+        string memory nameResult = huffERC20.name();
+        assertEq(nameResult, "JawnToken");
+
+    }
 
 //     function testSymbol() external {
 //         assertEq("GK", impl.symbol());
 //     }
 
     // function testMint() public {
-    //     sut.mint(alice, 2e18);
-    //     assertEq(sut.totalSupply(), sut.balanceOf(alice));
+    //     erc20.mint(alice, 2e18);
+    //     assertEq(erc20.totalSupply(), erc20.balanceOf(alice));
     // }
 
 //     function testBurn() public {
@@ -73,9 +93,9 @@ contract ERC20 is Test {
 
     // function testApprove() public {
     //     // console.log("Total Supply:", sut.totalSupply());
-    //     console.log("Console's not working");
-    //     assertTrue(sut.approve(alice, 1e18));
-    //     assertEq(sut.allowance(address(this),alice), 1e18);
+    //     // console.log("Console's not working");
+    //     assertTrue(erc20.approve(alice, 1e18));
+    //     assertEq(erc20.allowance(address(this),alice), 1e18);
     // }
 
 //     function testIncreaseAllowance() external {
