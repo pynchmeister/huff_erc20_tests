@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.15;
 
-import "foundry-huff/HuffDeployer.sol";
+// import "foundry-huff/HuffDeployer.sol";
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
 
-import {HuffDeployer} from "lib/foundry-huff/src/HuffDeployer.sol";
+import {HuffDeployer} from "src/lib/utils/HuffDeployer.sol";
 import "src/interfaces/IERC20.sol";
 
 // interface IERC20 {
-//     function name() external view returns (string);
-//     function symbol() external view returns (string);
+//     function name() external view returns (string memory);
+//     function symbol() external view returns (string memory);
 //     function decimals() external view returns (uint8);
 //     function totalSupply() external view returns (uint256);
 //     function balanceOf(address account) external view returns (uint256);
@@ -21,7 +21,7 @@ import "src/interfaces/IERC20.sol";
 
 // }
 
-contract ERC20Test is Test {
+contract ERC20 is Test {
 
     // The System under Test: https://en.wikipedia.org/wiki/System_under_test
     IERC20 sut;
@@ -29,31 +29,37 @@ contract ERC20Test is Test {
     address alice = vm.addr(0x1);
     address bob = vm.addr(0x2);
 
-    function setUp() public {
+    ///@notice create a new instance of HuffDeployer
+    HuffDeployer huffDeployer = new HuffDeployer();
+
+    IERC20 erc20;
+
+
+    function setUpAndDeploy() public {
         // Deploy a new instance of src/ERC20.huff
-        address impl = HuffDeployer.deploy("ERC20");
-        sut = IERC20(impl);
-        // impl = new ERC20("GOKU","GK");
+
+        erc20 = IERC20(huffDeployer.deployContract("ERC20"));
+        // address addr = HuffDeployer.deploy("huff_contracts/ERC20");
+        // sut = IERC20(addr);
+
+        // IERC20 ierc20 = IERC20(addr);
+        // erc20 = new ERC20("GOKU","GK");
+        // impl = new sut.name("Goku");
     }
 
-    // function testDeploymentInvariants() public {
-    //     assertEq(sut.name("Goku"), address(this));
-    //     // assertEq(sut.pendingOwner(), address(0));
-    // }
-
-
     // function testName() external {
-    //     assertEq("GOKU",impl.name());
+    //     sut.name(alice, "GOKU");
+    //     assertEq(sut.name("GOKU"), address(this));
     // }
 
 //     function testSymbol() external {
 //         assertEq("GK", impl.symbol());
 //     }
 
-//     function testMint() public {
-//         impl.mint(alice, 2e18);
-//         assertEq(impl.totalSupply(), impl.balanceOf(alice));
-//     }
+    // function testMint() public {
+    //     sut.mint(alice, 2e18);
+    //     assertEq(sut.totalSupply(), sut.balanceOf(alice));
+    // }
 
 //     function testBurn() public {
 //         impl.mint(alice, 10e18);
@@ -65,10 +71,12 @@ contract ERC20Test is Test {
 //         assertEq(impl.balanceOf(alice),2e18);
 //     }
 
-//     function testApprove() public {
-//         assertTrue(impl.approve(alice, 1e18));
-//         assertEq(impl.allowance(address(this),alice), 1e18);
-//     }
+    // function testApprove() public {
+    //     // console.log("Total Supply:", sut.totalSupply());
+    //     console.log("Console's not working");
+    //     assertTrue(sut.approve(alice, 1e18));
+    //     assertEq(sut.allowance(address(this),alice), 1e18);
+    // }
 
 //     function testIncreaseAllowance() external {
 //         assertEq(impl.allowance(address(this), alice), 0);
