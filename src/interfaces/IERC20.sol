@@ -8,6 +8,28 @@ pragma solidity ^0.8.0;
  */
 interface IERC20 {
     /**
+     * @dev Returns the name of token.
+     */
+    function name() external view returns (string memory);
+
+    /**
+     * @dev Returns the symbol of token.
+     */
+    function symbol() external view returns (string memory);
+
+    /**
+     * @dev Returns the symbol of token.
+     */
+    function decimals() external view returns (uint);
+
+
+    function DOMAIN_SEPARATOR() external view returns (bytes32);
+
+    function permit(address, address, uint256, uint256, uint8, bytes32, bytes32) external;
+
+    function nonces(address) external returns (uint256);
+
+    /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
      * another (`to`).
      *
@@ -33,6 +55,21 @@ interface IERC20 {
 
     /**
      * @dev Moves `amount` tokens from the caller's account to `to`.
+     *
+     * Emits a {Transfer} event.
+     */
+    function mint(address to, uint256 amount) external;
+
+    /**
+     * @dev Removes `amount` tokens from the `from` account.
+     *
+     *
+     * Emits a {Transfer} event.
+     */
+    function burn(address from, uint256 amount) external;
+
+    /**
+     * @dev Creates new token.
      *
      * Returns a boolean value indicating whether the operation succeeded.
      *
@@ -79,7 +116,4 @@ interface IERC20 {
         address to,
         uint256 amount
     ) external returns (bool);
-
-    function name() external view returns (string memory);
-    function symbol() external view returns (string memory);
 }
